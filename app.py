@@ -23,11 +23,31 @@ load_dotenv()
 
 SAMPLE_DIRECTORY = Path("data/sample")
 SAMPLE_TRANSCRIPT = SAMPLE_DIRECTORY / "reuniao_ficticia.txt"
+CSS_PATH = Path("assets/styles.css")
 
 
 # =========================================================
 # CONFIGURAÇÃO DA PÁGINA
 # =========================================================
+
+
+
+def load_css(css_path: Path) -> None:
+    """Carrega o arquivo CSS externo da aplicação."""
+
+    if not css_path.exists():
+        return
+
+    css_content = css_path.read_text(
+        encoding="utf-8"
+    )
+
+    st.markdown(
+        f"<style>{css_content}</style>",
+        unsafe_allow_html=True,
+    )
+
+
 
 st.set_page_config(
     page_title="Meeting Intelligence",
@@ -35,6 +55,10 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+load_css(CSS_PATH)
+
+
 
 
 # =========================================================
