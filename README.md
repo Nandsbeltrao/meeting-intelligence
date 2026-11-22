@@ -12,7 +12,7 @@ A solução utiliza a Cohere para analisar a transcrição, Pydantic para valida
 
 Acesse a aplicação:
 
-(https://meeting-intelligence-1wqc.onrender.com)
+(https://meeting-intelligence-1-gsmh.onrender.com)
 
 > A aplicação utiliza uma instância gratuita e pode levar aproximadamente um minuto para iniciar após um período sem acessos.
 
