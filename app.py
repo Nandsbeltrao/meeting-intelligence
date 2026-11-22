@@ -19,17 +19,29 @@ from src.transcript_loader import (
 )
 
 
+# =========================================================
+# CONFIGURAÇÃO INICIAL
+# =========================================================
+
 load_dotenv()
 
-SAMPLE_DIRECTORY = Path("data/sample")
-SAMPLE_TRANSCRIPT = SAMPLE_DIRECTORY / "reuniao_ficticia.txt"
 CSS_PATH = Path("assets/styles.css")
+SAMPLE_TRANSCRIPT = Path(
+    "data/sample/reuniao_ficticia.txt"
+)
+
+
+st.set_page_config(
+    page_title="Meeting Intelligence",
+    page_icon="✦",
+    layout="wide",
+    initial_sidebar_state="collapsed",
+)
 
 
 # =========================================================
-# CONFIGURAÇÃO DA PÁGINA
+# FUNÇÕES AUXILIARES
 # =========================================================
-
 
 
 def load_css(css_path: Path) -> None:
@@ -48,24 +60,6 @@ def load_css(css_path: Path) -> None:
     )
 
 
-
-st.set_page_config(
-    page_title="Meeting Intelligence",
-    page_icon="✦",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
-
-load_css(CSS_PATH)
-
-
-
-
-# =========================================================
-# FUNÇÕES AUXILIARES
-# =========================================================
-
-
 def format_optional_value(
     value: str | None,
 ) -> str:
@@ -82,10 +76,10 @@ def initialize_session_state() -> None:
 
     default_values = {
         "transcript": None,
+        "transcript_name": None,
         "analysis": None,
         "reviewed_analysis": None,
         "evidence_results": [],
-        "transcript_name": None,
     }
 
     for key, value in default_values.items():
@@ -101,7 +95,21 @@ def reset_analysis() -> None:
     st.session_state.evidence_results = []
 
 
+load_css(CSS_PATH)
 initialize_session_state()
+
+
+# =========================================================
+# CONFIGURAÇÃO INTERNA DA IA
+# =========================================================
+
+if not os.getenv("COHERE_API_KEY"):
+    st.error(
+        "A inteligência artificial não está configurada no momento. "
+        "Verifique a variável COHERE_API_KEY no ambiente da aplicação."
+    )
+
+    st.stop()
 
 
 # =========================================================
@@ -120,44 +128,6 @@ st.caption(
     "explicitamente na transcrição. A versão final permanece sujeita "
     "à revisão humana."
 )
-
-
-# =========================================================
-# CONFIGURAÇÃO DA IA
-# =========================================================
-
-st.sidebar.header("Configuração da IA")
-
-st.sidebar.caption(
-    "Informe uma Trial API Key da Cohere ou utilize a chave "
-    "configurada no arquivo .env."
-)
-
-cohere_api_key = st.sidebar.text_input(
-    "Cohere API Key",
-    type="password",
-    help=(
-        "A chave digitada permanece somente durante a sessão atual "
-        "e não é armazenada pela aplicação."
-    ),
-)
-
-environment_api_key = os.getenv("COHERE_API_KEY")
-
-if cohere_api_key:
-    os.environ["COHERE_API_KEY"] = cohere_api_key.strip()
-    st.sidebar.success("Chave configurada para esta sessão.")
-
-elif environment_api_key:
-    os.environ["COHERE_API_KEY"] = environment_api_key
-    st.sidebar.success("Chave carregada pelo ambiente.")
-
-else:
-    st.warning(
-        "Informe uma Cohere API Key na barra lateral "
-        "para utilizar a aplicação."
-    )
-    st.stop()
 
 
 # =========================================================
@@ -275,21 +245,24 @@ if load_button:
 if st.session_state.transcript:
     transcript = st.session_state.transcript
 
-    metric_column_1, metric_column_2, metric_column_3 = (
-        st.columns(3)
-    )
+    (
+        file_metric,
+        characters_metric,
+        lines_metric,
+    ) = st.columns(3)
 
-    metric_column_1.metric(
+    file_metric.metric(
         "Arquivo",
-        st.session_state.transcript_name or "Transcrição",
+        st.session_state.transcript_name
+        or "Transcrição",
     )
 
-    metric_column_2.metric(
+    characters_metric.metric(
         "Caracteres",
         len(transcript),
     )
 
-    metric_column_3.metric(
+    lines_metric.metric(
         "Linhas",
         len(transcript.splitlines()),
     )
@@ -342,7 +315,7 @@ if st.session_state.transcript:
 
 
 # =========================================================
-# RESULTADOS DA ANÁLISE
+# RESULTADOS
 # =========================================================
 
 if st.session_state.analysis:
@@ -370,6 +343,7 @@ if st.session_state.analysis:
             st.markdown(
                 f"- {topic}"
             )
+
     else:
         st.info(
             "Nenhum assunto principal foi identificado."
@@ -546,16 +520,17 @@ if st.session_state.analysis:
         if not result["evidence_found"]
     ]
 
-    validation_column_1, validation_column_2 = (
-        st.columns(2)
-    )
+    (
+        verified_items_column,
+        invalid_items_column,
+    ) = st.columns(2)
 
-    validation_column_1.metric(
+    verified_items_column.metric(
         "Itens verificados",
         len(evidence_results),
     )
 
-    validation_column_2.metric(
+    invalid_items_column.metric(
         "Evidências não localizadas",
         len(invalid_evidence),
     )
@@ -568,8 +543,8 @@ if st.session_state.analysis:
 
     else:
         st.warning(
-            "Existem itens cuja evidência não foi localizada "
-            "literalmente na transcrição. Revise-os antes do uso."
+            "Existem evidências que não foram localizadas "
+            "literalmente na transcrição. Revise os itens."
         )
 
         for result in invalid_evidence:
@@ -586,7 +561,7 @@ if st.session_state.analysis:
 
 
     # =====================================================
-    # REVISÃO HUMANA DAS TAREFAS
+    # REVISÃO HUMANA
     # =====================================================
 
     st.divider()
@@ -775,12 +750,12 @@ if st.session_state.analysis:
         )
 
         (
-            download_column_1,
-            download_column_2,
-            download_column_3,
+            markdown_download_column,
+            csv_download_column,
+            json_download_column,
         ) = st.columns(3)
 
-        download_column_1.download_button(
+        markdown_download_column.download_button(
             label="Baixar ata em Markdown",
             data=markdown_content,
             file_name="ata_reuniao.md",
@@ -788,7 +763,7 @@ if st.session_state.analysis:
             use_container_width=True,
         )
 
-        download_column_2.download_button(
+        csv_download_column.download_button(
             label="Baixar tarefas em CSV",
             data=csv_content.encode("utf-8-sig"),
             file_name="tarefas_reuniao.csv",
@@ -796,7 +771,7 @@ if st.session_state.analysis:
             use_container_width=True,
         )
 
-        download_column_3.download_button(
+        json_download_column.download_button(
             label="Baixar análise em JSON",
             data=json_content,
             file_name="analise_reuniao.json",
