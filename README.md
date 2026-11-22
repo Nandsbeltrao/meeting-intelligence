@@ -10,7 +10,11 @@ A solução utiliza a Cohere para analisar a transcrição, Pydantic para valida
 
 ## Aplicação publicada
 
-O link da aplicação será adicionado após a publicação no Render.
+Acesse a aplicação:
+
+(https://meeting-intelligence-1wqc.onrender.com)
+
+> A aplicação utiliza uma instância gratuita e pode levar aproximadamente um minuto para iniciar após um período sem acessos.
 
 > A aplicação utiliza uma instância gratuita e pode levar aproximadamente um minuto para iniciar após um período sem acessos.
 
@@ -427,12 +431,10 @@ O resultado se aplica ao conjunto fictício avaliado e não representa uma métr
 - [x] Interface em Streamlit.
 - [x] Avaliação formal 8/8.
 - [x] Identidade visual.
+- [x] Publicação no Render.
+- [x] Validação pública do upload e dos downloads.
+- [x] Inclusão do link público neste README.
 
-### Pendente
-
-- [ ] Publicação no Render.
-- [ ] Validação pública do upload e dos downloads.
-- [ ] Inclusão do link público neste README.
 
 ---
 
