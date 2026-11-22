@@ -1,0 +1,45 @@
+{
+  "title": "Reunião de planejamento do evento fictício",
+  "summary": "A equipe discutiu a finalização do regulamento, definiu o início da divulgação para a segunda-feira seguinte, identificou a necessidade de escolher uma ferramenta de rastreamento de inscrições, observou que a preparação do formulário de inscrição está pendente de atribuição de responsável e prazo, e considerou uma sugestão de conteúdo para redes sociais.",
+  "topics": [
+    "Finalização do regulamento",
+    "Data de início da divulgação",
+    "Seleção de ferramenta de rastreamento de inscrições",
+    "Preparação do formulário de inscrição",
+    "Sugestão de conteúdo para redes sociais"
+  ],
+  "decisions": [
+    {
+      "description": "A divulgação começará na segunda-feira seguinte.",
+      "evidence": "Então ficou decidido que a divulgação começará na segunda-feira seguinte.",
+      "explicitly_mentioned": true
+    }
+  ],
+  "action_items": [
+    {
+      "task": "Revisar o regulamento",
+      "owner": "Bruno",
+      "deadline": "sexta-feira, 27 de novembro",
+      "evidence": "Eu posso revisar o regulamento até sexta-feira, 27 de novembro.",
+      "explicitly_mentioned": true
+    }
+  ],
+  "pending_items": [
+    {
+      "description": "Escolher a ferramenta que será utilizada para acompanhar as inscrições",
+      "evidence": "Ainda precisamos escolher a ferramenta que será utilizada para acompanhar as inscrições."
+    },
+    {
+      "description": "Preparar o formulário de inscrição",
+      "evidence": "Também precisamos preparar o formulário de inscrição, mas ainda não definimos uma pessoa responsável nem um prazo."
+    }
+  ],
+  "suggestions": [
+    {
+      "description": "Publicar uma sequência de conteúdos nas redes sociais",
+      "proposed_by": "Carla",
+      "evidence": "Sugiro publicar uma sequência de conteúdos nas redes sociais, mas essa proposta ainda precisa ser aprovada.",
+      "approved": false
+    }
+  ]
+}
